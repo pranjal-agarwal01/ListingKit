@@ -81,6 +81,36 @@ referrers, countries, devices, and those events in the Analytics tab within minu
 
 ---
 
+## Collect signup emails (build your list)
+
+The tool asks for an email after each kit is generated and POSTs it to `/api/subscribe`, which
+forwards it to a webhook **you** control. The simplest free option that you fully own is a
+**Google Sheet**:
+
+1. Create a Google Sheet (e.g. "ListingKit signups"). Row 1 headers: `Date | Email | Source | Timestamp`.
+2. **Extensions → Apps Script**, delete the sample, paste:
+   ```javascript
+   function doPost(e) {
+     var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
+     var d = JSON.parse(e.postData.contents);
+     sheet.appendRow([new Date(), d.email, d.source || '', d.ts || '']);
+     return ContentService
+       .createTextOutput(JSON.stringify({ ok: true }))
+       .setMimeType(ContentService.MimeType.JSON);
+   }
+   ```
+3. **Deploy → New deployment → Web app.** Execute as: **Me**. Who has access: **Anyone**. Deploy, and authorize when prompted.
+4. Copy the Web app URL (ends in `/exec`).
+5. In Vercel → **Settings → Environment Variables**, add `SUBSCRIBE_WEBHOOK_URL` = that URL. **Redeploy.**
+
+Emails now land in your sheet in real time. Prefer a form service (Formspree, Web3Forms, etc.)?
+Just set `SUBSCRIBE_WEBHOOK_URL` to its endpoint instead — the code is webhook-agnostic.
+
+> Until you set the webhook, captured emails are written to the function logs
+> (Vercel → Deployments → your function → Logs) so nothing is lost during setup.
+
+---
+
 ## Test locally (optional)
 
 ```bash

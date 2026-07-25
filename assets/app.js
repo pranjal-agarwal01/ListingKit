@@ -157,6 +157,7 @@
       icon("sign"), el("span", null, [el("b", null, [comp.status === "flagged" ? "Fair Housing: rewritten. " : "Fair Housing: clean. "]), comp.note || ""])]);
     results.appendChild(cb);
 
+    results.appendChild(captureBlock());
     results.appendChild(descriptionsBlock(d.descriptions || {}));
     results.appendChild(captionsBlock(d.captions || []));
     results.appendChild(carouselBlock(d.carousel && d.carousel.slides || [], ctx));
@@ -165,6 +166,30 @@
     results.appendChild(statusBlock(d.statusGraphics || [], ctx));
 
     results.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  /* email capture — turns an anonymous user into a lead + list */
+  function captureBlock() {
+    var input = el("input", { type: "email", placeholder: "you@brokerage.com", "aria-label": "Your email" });
+    var wrap = el("div", { class: "capture" });
+    var form = el("form", { class: "cap-form" }, [input, el("button", { class: "btn btn-primary", type: "submit" }, ["Notify me"])]);
+    form.addEventListener("submit", function (e) { e.preventDefault(); submitEmail(input.value, wrap); });
+    wrap.appendChild(el("div", { class: "cap-inner" }, [
+      el("div", { class: "cap-copy" }, [
+        el("h3", null, ["🎉 Your kit is ready — want in early?"]),
+        el("p", null, ["Get first access to paid features and lock in founding pricing — $29/mo for life. No spam, just the launch."]),
+      ]),
+      form,
+    ]));
+    return wrap;
+  }
+  function submitEmail(email, wrap) {
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { toast("Enter a valid email"); return; }
+    fetch("/api/subscribe", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: email, source: "results" }) }).catch(function () {});
+    track("email_captured");
+    wrap.innerHTML = "";
+    wrap.className = "capture done";
+    wrap.appendChild(el("div", { class: "cap-done" }, ["✓ You're on the founding list — we'll email you at launch."]));
   }
 
   function block(title, iconName, body, headExtra) {

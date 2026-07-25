@@ -72,6 +72,21 @@
   .compliance-banner.flagged{background:var(--danger-tint);color:var(--danger);}
   .compliance-banner b{font-weight:700;}
 
+  /* email capture card */
+  .capture{background:linear-gradient(150deg,var(--forest-tint),var(--card));border:1px solid var(--forest);
+    border-radius:var(--radius);padding:18px 20px;margin-bottom:20px;}
+  .capture.done{background:var(--forest-tint);}
+  .cap-inner{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+  .cap-copy h3{font-family:var(--font-sans);font-weight:700;font-size:15.5px;margin-bottom:4px;letter-spacing:0;}
+  .cap-copy p{font-size:13.5px;color:var(--ink-soft);max-width:46ch;}
+  .cap-form{display:flex;gap:8px;flex:0 0 auto;}
+  .cap-form input{font-size:14.5px;padding:10px 13px;border-radius:10px;border:1px solid var(--line-strong);
+    background:var(--card);color:var(--ink);min-width:210px;}
+  .cap-form input::placeholder{color:var(--ink-faint);}
+  .cap-form .btn{padding:10px 16px;}
+  .cap-done{font-weight:600;color:var(--forest);font-size:15px;}
+  @media(max-width:560px){.cap-inner{flex-direction:column;align-items:stretch}.cap-form{width:100%}.cap-form input{flex:1;min-width:0}}
+
   .block{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
     box-shadow:var(--shadow);margin-bottom:20px;overflow:hidden;}
   .block-head{display:flex;align-items:center;justify-content:space-between;gap:10px;
