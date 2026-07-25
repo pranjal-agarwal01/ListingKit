@@ -1,0 +1,7 @@
+{
+  "name": "listingkit",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Turn one real estate listing into a full, designed marketing kit in seconds.",
+  "engines": { "node": ">=18" }
+}
