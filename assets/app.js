@@ -78,6 +78,16 @@
   function darken(h, amt) { var c = hexToRgb(h); return "rgb(" + c.map(function (v) { return clamp(v * (1 - amt)); }).join(",") + ")"; }
   function lighten(h, amt) { var c = hexToRgb(h); return "rgb(" + c.map(function (v) { return clamp(v + (255 - v) * amt); }).join(",") + ")"; }
   function luminance(h) { var c = hexToRgb(h).map(function (v) { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; }
+  function formatPrice(raw) {
+    if (!raw) return "";
+    var s = String(raw).trim();
+    var digits = s.replace(/[^0-9.]/g, "");
+    if (!digits) return s;
+    var mult = /m/i.test(s) ? 1e6 : /k/i.test(s) ? 1e3 : 1;
+    var n = Math.round(parseFloat(digits) * mult);
+    if (isNaN(n)) return s;
+    return "$" + n.toLocaleString("en-US");
+  }
 
   /* ================= submit ================= */
   var LOADING = ["Reading the listing…", "Writing descriptions…", "Crafting captions…", "Designing the carousel…", "Scripting the reel…", "Screening for compliance…"];
@@ -122,7 +132,12 @@
     if (results._iv) clearInterval(results._iv);
     results.innerHTML = "";
     var brand = /^#?[0-9a-fA-F]{6}$/.test((input.brandColor || "").replace("#", "")) ? "#" + input.brandColor.replace("#", "") : "#1D5B3B";
-    var ctx = { brand: brand, agentName: input.agentName || "Your Name", handle: input.contactHandle || input.contactPhone || "", status: input.status || "Just Listed" };
+    var specs = [input.beds && input.beds + " bd", input.baths && input.baths + " ba", input.sqft && input.sqft + " sqft"].filter(Boolean).join("  ·  ");
+    var ctx = {
+      brand: brand, agentName: input.agentName || "Your Name",
+      handle: input.contactHandle || input.contactPhone || "", status: input.status || "Just Listed",
+      price: formatPrice(input.price), addr: (input.address || "").split(",")[0].trim(), specs: specs,
+    };
 
     // mode notices
     if (d.mode === "demo") results.appendChild(el("div", { class: "notice demo" }, [
@@ -213,7 +228,12 @@
 
   function slideToOpts(s, ctx) {
     var role = s.role || "feature";
-    if (role === "cover") return { brand: ctx.brand, rider: s.headline || ctx.status, headline: (s.sub || "").split("·")[0].trim() || s.sub || "", sub: (s.sub || "").split("·").slice(1).join("·").trim(), big: true, footName: ctx.agentName, footHandle: ctx.handle };
+    if (role === "cover") return {
+      brand: ctx.brand, rider: ctx.status,
+      headline: ctx.price || ctx.addr || ctx.status,
+      sub: ctx.price ? [ctx.addr, ctx.specs].filter(Boolean).join("  ·  ") : ctx.specs,
+      big: true, footName: ctx.agentName, footHandle: ctx.handle,
+    };
     if (role === "cta") return { brand: ctx.brand, headline: s.headline || "Book a private tour", sub: s.sub || "", footName: ctx.agentName, footHandle: ctx.handle };
     return { brand: ctx.brand, headline: s.headline || "", sub: s.sub || "", footName: "", footHandle: "" };
   }
