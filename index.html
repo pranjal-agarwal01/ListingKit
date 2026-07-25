@@ -221,8 +221,12 @@
   </div>
 </footer>
 
+<!-- Vercel Web Analytics (enable in Vercel dashboard → Analytics). No-op until enabled. -->
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
+<script defer src="/_vercel/insights/script.js"></script>
 <script>
   (function(){
+    try{document.querySelectorAll('a[href="app.html"]').forEach(function(a){a.addEventListener('click',function(){if(window.va)window.va('event',{name:'try_click'});});});}catch(e){}
     var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var els=document.querySelectorAll('.reveal');
     if(reduce||!('IntersectionObserver' in window)){els.forEach(function(el){el.classList.add('in');});return;}

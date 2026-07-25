@@ -7,6 +7,10 @@
   var stage = document.getElementById("stage");
   var toastEl = document.getElementById("toast");
 
+  /* ---- analytics (Vercel Web Analytics custom events; no-op if not enabled) ---- */
+  function track(name, props) { try { if (window.va) window.va("event", Object.assign({ name: name }, props || {})); } catch (e) {} }
+  track("app_opened");
+
   /* ---- small DOM helper ---- */
   function el(tag, props, children) {
     var n = document.createElement(tag);
@@ -96,6 +100,7 @@
     var data = collect();
     if (!data.address) { toast("Add a property address first"); document.getElementById("address").focus(); return; }
     runLoading();
+    track("generate_started", { status: data.status || "", has_price: !!data.price, has_features: !!data.features });
     fetch("/api/generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) })
       .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
       .then(function (res) {
@@ -131,6 +136,7 @@
   function render(d, input) {
     if (results._iv) clearInterval(results._iv);
     results.innerHTML = "";
+    track("kit_generated", { status: (input.status || ""), mode: (d.mode || "") });
     var brand = /^#?[0-9a-fA-F]{6}$/.test((input.brandColor || "").replace("#", "")) ? "#" + input.brandColor.replace("#", "") : "#1D5B3B";
     var specs = [input.beds && input.beds + " bd", input.baths && input.baths + " ba", input.sqft && input.sqft + " sqft"].filter(Boolean).join("  ·  ");
     var ctx = {
@@ -302,7 +308,7 @@
     stage.innerHTML = ""; stage.appendChild(node);
     toast("Rendering PNG…");
     H2I.toPng(node, { width: 1080, height: 1080, pixelRatio: 1, cacheBust: true, backgroundColor: "#ffffff" })
-      .then(function (url) { stage.innerHTML = ""; triggerDownload(url, filename); toast("Downloaded ✓"); })
+      .then(function (url) { stage.innerHTML = ""; triggerDownload(url, filename); toast("Downloaded ✓"); track("graphic_downloaded"); })
       .catch(function (e) { stage.innerHTML = ""; toast("Export failed — try again"); });
   }
   function exportAll(slides, ctx) {
@@ -316,6 +322,7 @@
         .then(function (url) { stage.innerHTML = ""; triggerDownload(url, "listingkit-slide-" + (idx + 1) + ".png"); setTimeout(next, 350); })
         .catch(function () { stage.innerHTML = ""; setTimeout(next, 100); });
     }
+    track("carousel_downloaded", { slides: slides.length });
     toast("Rendering " + slides.length + " slides…"); next();
   }
   function triggerDownload(url, name) { var a = el("a", { href: url, download: name }); document.body.appendChild(a); a.click(); document.body.removeChild(a); }

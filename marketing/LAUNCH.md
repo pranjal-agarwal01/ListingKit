@@ -173,12 +173,36 @@ Offer free access as a favor, not a pitch. One helpful comment beats ten link dr
 
 ---
 
+## 🔗 Tag every link (so you know exactly what's working)
+
+Analytics sees *where* people came from; UTM tags make it precise. Add them to the link you
+drop in bios, comments, and posts:
+
+| Where | Link to use |
+|-------|-------------|
+| Instagram bio | `[URL]/?utm_source=instagram&utm_medium=bio` |
+| Reel / TikTok comment | `[URL]/?utm_source=tiktok&utm_medium=reel&utm_campaign=demo1` |
+| Reddit post | `[URL]/?utm_source=reddit&utm_medium=post` |
+| X thread | `[URL]/?utm_source=x&utm_medium=thread` |
+| LinkedIn | `[URL]/?utm_source=linkedin&utm_medium=post` |
+
+`utm_source` = platform, `utm_medium` = format, `utm_campaign` = the specific push. Bump
+`demo1`, `demo2`… per video so you can tell which one converted.
+
 ## 📊 What to watch (weekly, 5 minutes)
 
-- **Signups** (the number that matters) and **kits generated** (activation).
-- **Best hook** — which opening line got the most watch-time / comments. Make 3 more like it.
-- **Comment-to-DM rate** — are people asking "what's this called?" If yes, you have a hit.
-- Double down on formats that work; cut what doesn't. One viral demo can outrun a month of ads.
+In your Vercel **Analytics** tab you'll see visitors, top referrers, countries, and devices —
+plus these events the tool fires automatically:
+
+- **`app_opened`** — someone reached the tool.
+- **`generate_started` → `kit_generated`** — they actually made a kit (your activation metric).
+- **`carousel_downloaded` / `graphic_downloaded`** — they took content to post (strongest intent).
+- **`try_click`** — clicked through from the homepage.
+
+Two ratios tell you almost everything: **kit_generated ÷ app_opened** is your activation rate
+(if low, the form is scaring people off), and **carousel_downloaded ÷ kit_generated** tells you
+if the output is good enough to actually use. Then watch which **hook** and **utm_source** drive
+the most `kit_generated`, and make more of what works. One viral demo can outrun a month of ads.
 
 ---
 

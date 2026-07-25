@@ -72,6 +72,15 @@ visible notice instead of erroring.
 
 ---
 
+## Turn on analytics (see who's using it)
+
+In Vercel → your project → **Analytics** tab → **Enable Web Analytics**. That's it — the pages
+already include the snippet and fire custom events (`app_opened`, `generate_started`,
+`kit_generated`, `carousel_downloaded`, `graphic_downloaded`, `try_click`). You'll see visitors,
+referrers, countries, devices, and those events in the Analytics tab within minutes. Free on Hobby.
+
+---
+
 ## Test locally (optional)
 
 ```bash
